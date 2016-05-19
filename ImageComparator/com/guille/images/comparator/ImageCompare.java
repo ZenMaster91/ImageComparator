@@ -1,48 +1,51 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.image.*;
-import com.sun.image.codec.jpeg.*;
+package com.guille.images.comparator;
 
- public class ImageCompare {
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.GrayFilter;
+
+public class ImageCompare {
 
 	protected BufferedImage img1 = null;
 	protected BufferedImage img2 = null;
 	protected BufferedImage imgc = null;
+	private String nImg1, nImg2;
 	protected int comparex = 0;
 	protected int comparey = 0;
 	protected int factorA = 0;
 	protected int factorD = 10;
 	protected boolean match = false;
-	protected int debugMode = 0; // 1: textual indication of change, 2: difference of factors
+	protected int debugMode = 0; // 1: textual indication of change, 2:
+									// difference of factors
+	
+	public static final String PATH_TO_SAMPLES = "com/guille/images/samples/";
+	public static final String PATH_TO_RESULTS = "/com/guille/images/results/";
 
-	/* create a runable demo thing. */
-	public static void main(String[] args) {
-		// Create a compare object specifying the 2 images for comparison.
-		ImageCompare ic = new ImageCompare("c:\\test1.jpg", "c:\\test2.jpg");
-		// Set the comparison parameters. 
-		//   (num vertical regions, num horizontal regions, sensitivity, stabilizer)
-		ic.setParameters(8, 6, 5, 10);
-		// Display some indication of the differences in the image.
-		ic.setDebugMode(2);
-		// Compare.
-		ic.compare();
-		// Display if these images are considered a match according to our parameters.
-		System.out.println("Match: " + ic.match());
-		// If its not a match then write a file to show changed regions.
-		if (!ic.match()) {
-			saveJPG(ic.getChangeIndicator(), "c:\\changes.jpg");
-		}
+	/**
+	 * Constructor using the names of the samples
+	 * @param sample1 is the first image to be compared.
+	 * @param sample2 is the second image to be compared.
+	 */
+	public ImageCompare(String sample1, String sample2) {
+		this(loadJPG(PATH_TO_SAMPLES + sample1), loadJPG(PATH_TO_SAMPLES + sample2));
+		this.nImg1 = sample1.split("\\.")[0];
+		this.nImg2 = sample2.split("\\.")[0];
 	}
 	
-	// constructor 1. use filenames
-	public ImageCompare(String file1, String file2) {
-		this(loadJPG(file1), loadJPG(file2));
+	public String getNameImg1() {
+		return this.nImg1;
 	}
- 
-	// constructor 2. use awt images.
+	
+	public String getNameImg2() {
+		return this.nImg2;
+	}
 	public ImageCompare(Image img1, Image img2) {
 		this(imageToBufferedImage(img1), imageToBufferedImage(img2));
 	}
@@ -91,7 +94,7 @@ import com.sun.image.codec.jpeg.*;
 		this.match = true;
 		// loop through whole image and compare individual blocks of images
 		for (int y = 0; y < comparey; y++) {
-			//if (debugMode > 0) System.out.print("|");
+			if (debugMode > 0) System.out.print("|");
 			for (int x = 0; x < comparex; x++) {
 				int b1 = getAverageBrightness(img1.getSubimage(x*blocksx, y*blocksy, blocksx - 1, blocksy - 1));
 				int b2 = getAverageBrightness(img2.getSubimage(x*blocksx, y*blocksy, blocksx - 1, blocksy - 1));
@@ -101,10 +104,10 @@ import com.sun.image.codec.jpeg.*;
 					gc.drawRect(x*blocksx, y*blocksy, blocksx - 1, blocksy - 1);
 					this.match = false;
 				}
-				//if (debugMode == 1) System.out.print((diff > factorA ? "X" : " "));
-				//if (debugMode == 2) System.out.print(diff + (x < comparex - 1 ? "," : ""));
+				if (debugMode == 1) System.out.print((diff > factorA ? "X" : " "));
+				if (debugMode == 2) System.out.print(diff + (x < comparex - 1 ? "," : ""));
 			}
-			//if (debugMode > 0) System.out.println("|");
+			if (debugMode > 0) System.out.println("|");
 		}
 	}
 	
@@ -138,7 +141,7 @@ import com.sun.image.codec.jpeg.*;
 		g2.drawImage(img, null, null);
 		return bi;
 	}
-	
+
 	// write a buffered image to a jpeg file.
 	protected static void saveJPG(Image img, String filename) {
 		BufferedImage bi = imageToBufferedImage(img);
@@ -149,18 +152,18 @@ import com.sun.image.codec.jpeg.*;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-//		JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(bi);
-//		param.setQuality(0.8f,false);
-//		encoder.setJPEGEncodeParam(param);
-//		try { 
-//			encoder.encode(bi); 
-//			out.close(); 
-//		} catch (java.io.IOException io) {
-//			System.out.println("IOException"); 
-//		}
+		// JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		// JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(bi);
+		// param.setQuality(0.8f,false);
+		// encoder.setJPEGEncodeParam(param);
+		// try {
+		// encoder.encode(bi);
+		// out.close();
+		// } catch (java.io.IOException io) {
+		// System.out.println("IOException");
+		// }
 	}
-	
+
 	// read a jpeg file into a buffered image
 	protected static Image loadJPG(String filename) {
 		File in = null;
@@ -174,5 +177,5 @@ import com.sun.image.codec.jpeg.*;
 		}
 		return bi;
 	}
-	
+
 }
