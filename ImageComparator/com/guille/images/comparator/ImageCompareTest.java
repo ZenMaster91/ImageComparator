@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ImageCompareTest {
@@ -11,11 +12,11 @@ public class ImageCompareTest {
 	@Test
 	public void basicImageTest() throws IOException {
 		// Create a compare object specifying the 2 images for comparison.
-		ImageCompare ic = new ImageCompare("diferencias2.jpg", "diferencias1.jpg");
+		ImageCompare ic = new ImageCompare("diferencias4.jpg", "diferencias5.jpg");
 		// Set the comparison parameters.
 		// (num vertical regions, num horizontal regions, sensitivity,
 		// stabilizer)
-		ic.setParameters(50, 50, 6, 100);
+		ic.setParameters(50, 50, 1, 250);
 		// Compare.
 		ic.setDebugMode(0);
 		ic.compare();
@@ -32,7 +33,7 @@ public class ImageCompareTest {
 		System.out.println("FINISHED");
 	}
 
-	@Test
+	@Test @Ignore
 	public void baseCaseTest() {
 		ImageCompare ic = new ImageCompare("test1.jpg", "test2.jpg");
 		ic.setParameters(8, 6, 5, 10);
