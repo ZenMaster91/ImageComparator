@@ -1,6 +1,7 @@
 package com.guille.images.comparator;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -16,7 +17,6 @@ public class ImageCompare {
 	protected BufferedImage img1 = null;
 	protected BufferedImage img2 = null;
 	protected BufferedImage imgc = null;
-	private String nImg1, nImg2;
 	protected int comparex = 0;
 	protected int comparey = 0;
 	protected int factorA = 0;
@@ -26,7 +26,8 @@ public class ImageCompare {
 									// difference of factors
 	
 	public static final String PATH_TO_SAMPLES = "com/guille/images/samples/";
-	public static final String PATH_TO_RESULTS = "/com/guille/images/results/";
+	public static final String PATH_TO_RESULTS = "com/guille/images/results/";
+	private String nImg1, nImg2;
 
 	/**
 	 * Constructor using the names of the samples
@@ -176,6 +177,27 @@ public class ImageCompare {
 			e.printStackTrace();
 		}
 		return bi;
+	}
+	
+	public void displayResult() {
+		File f = new File(ImageCompare.PATH_TO_RESULTS + this.getNameImg1() + "&" + this.getNameImg2() + ".jpg");
+		Desktop dt = Desktop.getDesktop();
+		try {
+			dt.open(f);
+		} catch (IOException e) {
+			System.err.println("Error while displaying the result picture");
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return this.nImg1+"&"+this.nImg2+this.img1.getHeight()+this.img2.getWidth()+this.img2.getHeight()+this.img2.getWidth();
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.toString().hashCode();
 	}
 
 }
