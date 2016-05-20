@@ -12,13 +12,13 @@ public class ImageCompareTest {
 	@Test
 	public void basicImageTest() throws IOException {
 		// Create a compare object specifying the 2 images for comparison.
-		ImageCompare ic = new ImageCompare("diferencias4.jpg", "diferencias5.jpg");
+		ImageCompare ic = new ImageCompare("diferencias4.jpg", "diferencias4false.jpg");
 		// Set the comparison parameters.
 		// (num vertical regions, num horizontal regions, sensitivity,
 		// stabilizer)
-		ic.setParameters(50, 50, 1, 250);
+		ic.setParameters(50, 50, 0, 250);
 		// Compare.
-		ic.setDebugMode(0);
+		ic.setDebugMode(2);
 		ic.compare();
 		// Display if these images are considered a match according to our
 		// parameters.
